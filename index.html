@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Learning Interaktif: Bilangan 1 sampai 10</title>
+    <style>
+        :root {
+            --primary-blue: #29b6f6;
+            --primary-green: #66bb6a;
+            --orange-sun: #ffa726;
+            --text-dark: #37474f;
+            --bg-light: #f1f8e9;
+            --white: #ffffff;
+            --accent-pink: #ec407a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Ubuntu', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-blue), #0288d1);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-bottom: 5px solid var(--orange-sun);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+            border: 3px solid #e0e0e0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .card.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #0288d1;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #b3e5fc;
+            padding-bottom: 10px;
+            font-size: 1.6rem;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .menu-btn {
+            background: var(--white);
+            border: 3px solid var(--primary-blue);
+            color: var(--text-dark);
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 0 var(--primary-blue);
+            text-align: center;
+        }
+
+        .menu-btn:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--primary-blue);
+        }
+
+        .menu-btn.green { border-color: var(--primary-green); box-shadow: 0 4px 0 var(--primary-green); }
+        .menu-btn.green:hover { background: var(--primary-green); }
+        .menu-btn.orange { border-color: var(--orange-sun); box-shadow: 0 4px 0 var(--orange-sun); }
+        .menu-btn.orange:hover { background: var(--orange-sun); }
+
+        /* Visual Elements for Learning */
+        .visual-box {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            padding: 20px;
+            background: #fcf8e3;
+            border-radius: 15px;
+            border: 2px dashed var(--orange-sun);
+        }
+
+        .item-icon {
+            font-size: 2.5rem;
+            animation: bounce 2s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        .comparison-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .basket {
+            border: 3px solid var(--orange-sun);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            background: #fff8e1;
+            min-width: 180px;
+        }
+
+        /* Navigation controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            max-width: 900px;
+            width: 100%;
+            margin: 10px auto 30px auto;
+            padding: 0 15px;
+        }
+
+        .nav-btn {
+            background: var(--orange-sun);
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #e65100;
+            transition: all 0.1s;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #e65100;
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            box-shadow: 0 4px 0 #999;
+            cursor: not-allowed;
+        }
+
+        /* Quiz Styles */
+        .quiz-option {
+            display: block;
+            width: 100%;
+            background: #f5f5f5;
+            border: 2px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            text-align: left;
+            transition: background 0.2s;
+        }
+
+        .quiz-option:hover {
+            background: #e1f5fe;
+            border-color: var(--primary-blue);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: none;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .feedback.correct {
+            display: block;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .feedback.wrong {
+            display: block;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .number-line {
+            display: flex;
+            justify-content: space-between;
+            background: #e0f2f1;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            border: 2px solid var(--primary-green);
+            margin: 20px 0;
+        }
+
+        .number-item {
+            background: white;
+            padding: 5px 12px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive styling for Mobile */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.6rem; }
+            .card { padding: 20px; }
+            .nav-btn { padding: 10px 18px; font-size: 1rem; }
+            .visual-box { gap: 10px; }
+            .item-icon { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>BAB 1: Bilangan 1 sampai 10</h1>
+        <p>Ayo belajar Matematika dengan seru dan menyenangkan!</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="card active" id="page-0">
+            <h2>Menu Belajar Interaktif</h2>
+            <div class="btn-grid">
+                <button class="menu-btn" onclick="goToPage(1)">Tujuan Pembelajaran</button>
+                <button class="menu-btn green" onclick="goToPage(2)">Menghitung 1-5</button>
+                <button class="menu-btn green" onclick="goToPage(3)">Menghitung 6-10</button>
+                <button class="menu-btn orange" onclick="goToPage(4)">Mengenal Angka 0</button>
+                <button class="menu-btn" onclick="goToPage(5)">Membandingkan Benda</button>
+                <button class="menu-btn green" onclick="goToPage(6)">Mengurutkan Bilangan</button>
+                <button class="menu-btn orange" onclick="goToPage(7)">Mengurai & Menyusun</button>
+                <button class="menu-btn" style="border-color: var(--accent-pink); box-shadow: 0 4px 0 var(--accent-pink);" onclick="goToPage(8)">Kuis Interaktif 🌟</button>
+            </div>
+        </div>
+
+        <div class="card" id="page-1">
+            <h2>🎯 Tujuan Pembelajaran</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 15px;">Setelah belajar hari ini, kita akan bisa:</p>
+            <ul style="font-size: 1.1rem;">
+                <li>✨ Menghitung benda 1 sampai 10.</li>
+                <li>✍️ Menulis lambang bilangan.</li>
+                <li>⚖️ Membandingkan banyak benda.</li>
+                <li>🔢 Mengurutkan bilangan.</li>
+                <li>🧩 Mengurai dan menyusun bilangan.</li>
+            </ul>
+            <div class="visual-box">
+                <span class="item-icon">🎨</span>
+                <span class="item-icon">📚</span>
+                <span class="item-icon">✏️</span>
+                <span class="item-icon">📐</span>
+            </div>
+        </div>
+
+        <div class="card" id="page-2">
+            <h2>🌸 Telaah 1: Menghitung 1-5</h2>
+            <p>Coba lihat gambar-gambar di sekitar kita di bawah ini. Ayo kita hitung bersama!</p>
+            
+            <div class="comparison-container">
+                <div class="basket">
+                    <h3>1 Pohon</h3>
+                    <div class="visual-box"><span class="item-icon">🌳</span></div>
+                </div>
+                <div class="basket">
+                    <h3>2 Batu</h3>
+                    <div class="visual-box"><span class="item-icon">🪨</span><span class="item-icon">🪨</span></div>
+                </div>
+                <div class="basket">
+                    <h3>3 Bunga</h3>
+                    <div class="visual-box"><span class="item-icon">🌸</span><span class="item-icon">🌸</span><span class="item-icon">🌸</span></div>
+                </div>
+                <div class="basket">
+                    <h3>4 Ranting</h3>
+                    <div class="visual-box"><span class="item-icon">🌿</span><span class="item-icon">🌿</span><span class="item-icon">🌿</span><span class="item-icon">🌿</span></div>
+                </div>
+                <div class="basket">
+                    <h3>5 Semut</h3>
+                    <div class="visual-box"><span class="item-icon">🐜</span><span class="item-icon">🐜</span><span class="item-icon">🐜</span><span class="item-icon">🐜</span><span class="item-icon">🐜</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="page-3">
+            <h2>🐞 Menghitung 6-10</h2>
+            <p>Hebat! Sekarang mari kita lanjutkan menghitung benda berjumlah 6 sampai 10!</p>
+            
+            <div class="comparison-container">
+                <div class="basket">
+                    <h3>7 Kumbang</h3>
+                    <div class="visual-box">
+                        <span class="item-icon">🐞</span><span class="item-icon">🐞</span><span class="item-icon">🐞</span>
+                        <span class="item-icon">🐞</span><span class="item-icon">🐞</span><span class="item-icon">🐞</span>
+                        <span class="item-icon">🐞</span>
+                    </div>
+                </div>
+                <div class="basket">
+                    <h3>10 Stroberi</h3>
+                    <div class="visual-box" style="grid-template-columns: repeat(5, 1fr);">
+                        <span class="item-icon">🍓</span><span class="item-icon">🍓</span><span class="item-icon">🍓</span><span class="item-icon">🍓</span><span class="item-icon">🍓</span>
+                        <span class="item-icon">🍓</span><span class="item-icon">🍓</span><span class="item-icon">🍓</span><span class="item-icon">🍓</span><span class="item-icon">🍓</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="page-4">
+            <h2>🎈 Mengenal Angka Nol (0)</h2>
+            <p style="font-size: 1.2rem; font-weight: bold; color: var(--accent-pink);">Angka Nol (0) Artinya Tidak Ada.</p>
+            <p style="margin-top: 10px;">Perhatikan perbedaan keranjang buah di bawah ini:</p>
+            
+            <div class="comparison-container">
+                <div class="basket">
+                    <h3>Keranjang Danu</h3>
+                    <div class="visual-box">
+                        <span class="item-icon">🍎</span><span class="item-icon">🍎</span>
+                        <span class="item-icon">🍎</span><span class="item-icon">🍎</span>
+                    </div>
+                    <p><strong>4 Apel</strong></p>
+                </div>
+                
+                <div class="basket" style="border-color: var(--accent-pink); background: #ffebee;">
+                    <h3>Keranjang Nina</h3>
+                    <div class="visual-box" style="min-height: 100px; justify-content: center; align-items: center;">
+                        <span style="color: #999; font-style: italic;">Kosong</span>
+                    </div>
+                    <p><strong>0 Apel</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="page-5">
+            <h2>⚖️ Telaah 2: Membandingkan Banyak Benda</h2>
+            <p>Mari kita hitung dan bandingkan jumlah kumpulan kelompok benda berikut:</p>
+            
+            <div class="comparison-container" style="background: #f0f4c3; border-radius: 15px; padding: 15px;">
+                <div style="text-align: center;">
+                    <h4>Kelompok Pensil</h4>
+                    <span class="item-icon">✏️</span><span class="item-icon">✏️</span><span class="item-icon">✏️</span>
+                    <p><strong>3 Pensil</strong></p>
+                </div>
+                
+                <div style="font-size: 2rem; color: var(--accent-pink); font-weight: bold;"> &lt; </div>
+                
+                <div style="text-align: center;">
+                    <h4>Kelompok Penghapus</h4>
+                    <span class="item-icon">🧽</span><span class="item-icon">🧽</span><span class="item-icon">🧽</span><span class="item-icon">🧽</span>
+                    <p><strong>4 Penghapus</strong></p>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 15px; font-size: 1.1rem; font-weight: bold; color: #558b2f;">
+                Kesimpulan: Jumlah pensil lebih sedikit dari penghapus (3 kurang dari 4).
+            </p>
+        </div>
+
+        <div class="card" id="page-6">
+            <h2>🔢 Mengurutkan Bilangan</h2>
+            <p>Perhatikan susunan urutan bilangan ceria dari angka 1 sampai 10 di bawah ini:</p>
+            
+            <div class="number-line">
+                <div class="number-item">1</div><div class="number-item">2</div><div class="number-item">3</div>
+                <div class="number-item">4</div><div class="number-item">5</div><div class="number-item">6</div>
+                <div class="number-item">7</div><div class="number-item">8</div><div class="number-item">9</div>
+                <div class="number-item">10</div>
+            </div>
+            
+            <ul>
+                <li>➡️ <strong>Dari Terkecil (Ke Kanan):</strong> Urutan dimulai dari bilangan yang nilainya paling kecil (1, 2, 3, ...).</li>
+                <li>⬅️ <strong>Dari Terbesar (Ke Kiri):</strong> Urutan dimulai dari bilangan yang nilainya paling besar (10, 9, 8, ...).</li>
+            </ul>
+        </div>
+
+        <div class="card" id="page-7">
+            <h2>🧩 Mengurai dan Menyusun Bilangan</h2>
+            <p>Sebuah bilangan utuh bisa kita urai menjadi 2 kelompok angka yang lebih kecil, atau sebaliknya!</p>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 12px;">
+                <h3>1. Mengurai Bilangan (Contoh: Angka 7)</h3>
+                <p>7 Pensil jika dipisahkan bisa menjadi gabungan dari:</p>
+                <p style="font-size: 1.2rem; font-weight: bold; color: #2e7d32; text-align: center; margin: 10px 0;">
+                    4 Pensil dan 3 Pensil
+                </p>
+                <p>Bentuk penguraian lain dari bilangan 7:</p>
+                <ul>
+                    <li>1 + 6 = 7</li>
+                    <li>2 + 5 = 7</li>
+                    <li>3 + 4 = 7</li>
+                </ul>
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: #fff3e0; border-radius: 12px;">
+                <h3>2. Menyusun Bilangan (Contoh: Angka 8)</h3>
+                <p>Jika kita kumpulkan kelompok kecil angka, ia akan menyusun angka besar baru:</p>
+                <p style="font-size: 1.2rem; font-weight: bold; color: #e65100; text-align: center; margin: 10px 0;">
+                    4 dan 4 disusun menjadi 8
+                </p>
+            </div>
+        </div>
+
+        <div class="card" id="page-8">
+            <h2>✍️ Uji Kemampuanmu (Kuis Interaktif)</h2>
+            <p style="margin-bottom: 20px; font-weight: bold; color: #0288d1;">Jawablah pertanyaan kuis seru di bawah ini:</p>
+            
+            <div class="quiz-block" style="margin-bottom: 25px;">
+                <p><strong>Soal 1: Berapa jumlah kelereng di bawah ini?</strong></p>
+                <div class="visual-box" style="justify-content: flex-start; padding: 10px; margin: 10px 0;">
+                    🔵 🔵 🔵 🔵 🔵 🔵 🔵
+                </div>
+                <button class="quiz-option" onclick="checkAnswer(1, 'B')">A. 6 Kelereng</button>
+                <button class="quiz-option" onclick="checkAnswer(1, 'B')">B. 7 Kelereng</button>
+                <button class="quiz-option" onclick="checkAnswer(1, 'B')">C. 8 Kelereng</button>
+                <div class="feedback" id="feedback-1"></div>
+            </div>
+
+            <div class="quiz-block" style="margin-bottom: 25px; border-top: 2px dashed #ccc; padding-top: 20px;">
+                <p><strong>Soal 2: Mana buah yang jumlahnya lebih banyak?</strong></p>
+                <div class="comparison-container" style="margin: 10px 0;">
+                    <div>🍓 🍓 🍓 🍓 🍓 (5 Stroberi)</div>
+                    <div>🍍 🍍 🍍 (3 Nanas)</div>
+                </div>
+                <button class="quiz-option" onclick="checkAnswer(2, 'A')">A. Stroberi lebih banyak dari Nanas</button>
+                <button class="quiz-option" onclick="checkAnswer(2, 'A')">B. Nanas lebih banyak dari Stroberi</button>
+                <div class="feedback" id="feedback-2"></div>
+            </div>
+
+            <div class="quiz-block" style="margin-bottom: 25px; border-top: 2px dashed #ccc; padding-top: 20px;">
+                <p><strong>Soal 3: Urutkan bilangan [5, 8, 3] dari yang TERKECIL!</strong></p>
+                <button class="quiz-option" onclick="checkAnswer(3, 'C')">A. 8, 5, 3</button>
+                <button class="quiz-option" onclick="checkAnswer(3, 'C')">B. 5, 3, 8</button>
+                <button class="quiz-option" onclick="checkAnswer(3, 'C')">C. 3, 5, 8</button>
+                <div class="feedback" id="feedback-3"></div>
+            </div>
+
+            <div class="quiz-block" style="margin-bottom: 25px; border-top: 2px dashed #ccc; padding-top: 20px;">
+                <p><strong>Soal 4: Bilangan 9 dapat diurai dari susunan angka?</strong></p>
+                <button class="quiz-option" onclick="checkAnswer(4, 'B')">A. 3 + 5</button>
+                <button class="quiz-option" onclick="checkAnswer(4, 'B')">B. 4 + 5</button>
+                <button class="quiz-option" onclick="checkAnswer(4, 'B')">C. 1 + 7</button>
+                <div class="feedback" id="feedback-4"></div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; font-size: 1.5rem; font-weight: bold; color: var(--primary-green);">
+                🎉 ALHAMDULILLAH Selesai! 🎉
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button class="nav-btn" id="prevBtn" onclick="changePage(-1)">⬅️ Kembali</button>
+        <button class="nav-btn" id="homeBtn" onclick="goToPage(0)">🏠 Menu Utama</button>
+        <button class="nav-btn" id="nextBtn" onclick="changePage(1)">Lanjut ➡️</button>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        const totalPages = 9; // Total halaman termasuk menu
+
+        function updatePageVisibility() {
+            // Sembunyikan semua card halaman
+            for (let i = 0; i < totalPages; i++) {
+                const page = document.getElementById(`page-${i}`);
+                if (page) page.classList.remove('active');
+            }
+            
+            // Tampilkan halaman aktif saat ini
+            document.getElementById(`page-${currentPage}`).classList.add('active');
+
+            // Atur status keaktifan tombol Navigasi
+            document.getElementById('prevBtn').disabled = (currentPage === 0);
+            document.getElementById('nextBtn').disabled = (currentPage === totalPages - 1);
+            
+            // Gulir otomatis layar ke atas ketika halaman berganti
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            if (currentPage < 0) currentPage = 0;
+            if (currentPage >= totalPages) currentPage = totalPages - 1;
+            updatePageVisibility();
+        }
+
+        function goToPage(pageIndex) {
+            currentPage = pageIndex;
+            updatePageVisibility();
+        }
+
+        function checkAnswer(questionNum, correctOption) {
+            const feedbackDiv = document.getElementById(`feedback-${questionNum}`);
+            
+            // Simulasi deteksi jawaban sederhana lewat event target click
+            const selected = event.target.innerText;
+            if (selected.startsWith(correctOption)) {
+                feedbackDiv.innerText = "🌟 HEBAT! Jawabanmu BENAR! 🎉";
+                feedbackDiv.className = "feedback correct";
+            } else {
+                feedbackDiv.innerText = "❌ Kurang tepat, ayo coba hitung sekali lagi! 💪";
+                feedbackDiv.className = "feedback wrong";
+            }
+        }
+
+        // Inisialisasi tampilan awal halaman web saat dimuat pertama kali
+        updatePageVisibility();
+    </script>
+</body>
+</html>
